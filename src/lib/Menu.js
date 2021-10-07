@@ -14,13 +14,13 @@ import {
   settingsShortcutKey,
   isLinux,
   isMac,
-  aboutAppDetails,
   lockFerdiShortcutKey,
   todosToggleShortcutKey,
   workspaceToggleShortcutKey,
   addNewServiceShortcutKey,
   muteFerdiShortcutKey,
 } from '../environment';
+import { aboutAppDetails } from '../environment-remote';
 import { todosStore } from '../features/todos';
 import { todoActions } from '../features/todos/actions';
 import { workspaceActions } from '../features/workspaces/actions';
@@ -404,14 +404,14 @@ const _titleBarTemplateFactory = (intl, locked) => [
       },
       {
         label: intl.formatMessage(menuItems.back),
-        accelerator: `${cmdOrCtrlShortcutKey()}+Left`,
+        accelerator: `${!isMac ? altKey() : cmdOrCtrlShortcutKey()}+Left`,
         click() {
           getActiveService().webview.goBack();
         },
       },
       {
         label: intl.formatMessage(menuItems.forward),
-        accelerator: `${cmdOrCtrlShortcutKey()}+Right`,
+        accelerator: `${!isMac ? altKey() : cmdOrCtrlShortcutKey()}+Right`,
         click() {
           getActiveService().webview.goForward();
         },
@@ -630,7 +630,7 @@ class FranzMenu {
         },
       );
 
-      if (this.stores.features.features.isTodosEnabled) {
+      if (this.stores.todos.isFeatureEnabledByUser) {
         tpl[1].submenu.push({
           label: intl.formatMessage(menuItems.toggleTodosDevTools),
           accelerator: `${cmdOrCtrlShortcutKey()}+${shiftKey()}+${altKey()}+O`,

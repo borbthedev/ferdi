@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import { cloneElement, Component } from 'react';
 import PropTypes from 'prop-types';
 import { observer } from 'mobx-react';
-import { TitleBar } from 'electron-react-titlebar';
+import { TitleBar } from 'electron-react-titlebar/renderer';
 
 import { injectIntl } from 'react-intl';
 import Link from '../ui/Link';
@@ -87,7 +87,7 @@ class AuthLayout extends Component {
           )}
           <div className="auth__layout">
             {/* Inject globalError into children  */}
-            {React.cloneElement(children, {
+            {cloneElement(children, {
               error,
             })}
           </div>

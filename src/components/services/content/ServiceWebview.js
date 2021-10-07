@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import { observer } from 'mobx-react';
 import { observable, reaction } from 'mobx';
@@ -85,7 +85,8 @@ class ServiceWebview extends Component {
         useragent={service.userAgent}
         disablewebsecurity={service.recipe.disablewebsecurity ? true : undefined}
         allowpopups
-        webpreferences={`spellcheck=${isSpellcheckerEnabled ? 1 : 0}`}
+        nodeintegration
+        webpreferences={`spellcheck=${isSpellcheckerEnabled ? 1 : 0}, contextIsolation=1, enableRemoteModule=1`}
       />
     );
   }

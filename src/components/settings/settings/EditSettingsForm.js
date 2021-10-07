@@ -1,5 +1,5 @@
 import { systemPreferences } from '@electron/remote';
-import React, { Component } from 'react';
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import { observer } from 'mobx-react';
 import prettyBytes from 'pretty-bytes';
@@ -12,16 +12,13 @@ import ToggleRaw from '../../ui/ToggleRaw';
 import Select from '../../ui/Select';
 import Input from '../../ui/Input';
 
-import { FRANZ_TRANSLATION, GITHUB_FRANZ_URL } from '../../../config';
+import { DEFAULT_APP_SETTINGS, FRANZ_TRANSLATION, GITHUB_FRANZ_URL } from '../../../config';
 import {
-  DEFAULT_APP_SETTINGS,
-  ferdiVersion,
   isMac,
   isWindows,
   lockFerdiShortcutKey,
-  userDataPath,
-  userDataRecipesPath,
 } from '../../../environment';
+import { ferdiVersion, userDataPath, userDataRecipesPath } from '../../../environment-remote';
 import { openPath } from '../../../helpers/url-helpers';
 import globalMessages from '../../../i18n/globalMessages';
 

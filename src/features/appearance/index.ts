@@ -1,7 +1,6 @@
 import color from 'color';
 import { reaction } from 'mobx';
-import { iconSizeBias } from '../../config';
-import { DEFAULT_APP_SETTINGS } from '../../environment';
+import { DEFAULT_APP_SETTINGS, iconSizeBias } from '../../config';
 
 const STYLE_ELEMENT_ID = 'custom-appearance-style';
 
@@ -185,7 +184,6 @@ function generateVerticalStyle(widthStr, alwaysShowWorkspaces) {
 
   return `
   .sidebar {
-    height: ${sidebarWidth + verticalStyleOffset + 1}px !important;
   ${
     alwaysShowWorkspaces
       ? `
@@ -197,10 +195,6 @@ function generateVerticalStyle(widthStr, alwaysShowWorkspaces) {
 
   .sidebar .sidebar__button {
     width: ${width}px;
-  }
-
-  .app .app__content {
-    padding-top: ${sidebarWidth + verticalStyleOffset + 1}px !important;
   }
 
   .workspaces-drawer {

@@ -1,11 +1,11 @@
 /* eslint jsx-a11y/anchor-is-valid: 0 */
-import React, { Component } from 'react';
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, injectIntl } from 'react-intl';
 
 import { LIVE_FRANZ_API } from '../../config';
-import { API_VERSION, isDevMode, useLiveAPI } from '../../environment';
+import { API_VERSION, isDevMode, useLiveAPI } from '../../environment-remote';
 import Form from '../../lib/Form';
 import { required, email } from '../../helpers/validation-helpers';
 import serverlessLogin from '../../helpers/serverless-helpers';

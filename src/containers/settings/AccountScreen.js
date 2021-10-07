@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 
@@ -10,7 +10,7 @@ import SettingsStore from '../../stores/SettingsStore';
 import AccountDashboard from '../../components/settings/account/AccountDashboard';
 import ErrorBoundary from '../../components/util/ErrorBoundary';
 import { LIVE_FRANZ_API } from '../../config';
-import { WEBSITE } from '../../environment';
+import { WEBSITE } from '../../environment-remote';
 
 @inject('stores', 'actions')
 @observer

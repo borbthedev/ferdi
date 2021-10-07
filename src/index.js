@@ -1,27 +1,30 @@
 /* eslint-disable import/first */
 
-import { app, BrowserWindow, ipcMain, session, dialog } from 'electron';
+import { app, BrowserWindow, globalShortcut, ipcMain, session, dialog } from 'electron';
 
 import { emptyDirSync, ensureFileSync } from 'fs-extra';
 import { join } from 'path';
 import windowStateKeeper from 'electron-window-state';
-import { enforceMacOSAppLocation } from 'electron-util';
 import ms from 'ms';
+import { initializeRemote } from './electron-util';
+import { enforceMacOSAppLocation } from './enforce-macos-app-location';
 
-require('@electron/remote/main').initialize();
+initializeRemote();
 
-import { DEFAULT_WINDOW_OPTIONS } from './config';
+import { DEFAULT_APP_SETTINGS, DEFAULT_WINDOW_OPTIONS } from './config';
 
 import {
-  DEFAULT_APP_SETTINGS,
-  isDevMode,
   isMac,
   isWindows,
   isLinux,
+  altKey,
+} from './environment';
+import {
+  isDevMode,
   aboutAppDetails,
   userDataRecipesPath,
   userDataPath,
-} from './environment';
+} from './environment-remote';
 import { ifUndefinedBoolean } from './jsUtils';
 
 import { mainIpcHandler as basicAuthHandler } from './features/basicAuth';
@@ -39,11 +42,6 @@ import { openExternalUrl } from './helpers/url-helpers';
 import userAgent from './helpers/userAgent-helpers';
 
 const debug = require('debug')('Ferdi:App');
-
-// From Electron 9 onwards, app.allowRendererProcessReuse = true by default. This causes the app to crash on Windows due to the
-// Electron Windows Notification API crashing. Setting this to false fixes the issue until the electron team fixes the notification bug
-// More Info - https://github.com/electron/electron/issues/18397
-app.allowRendererProcessReuse = false;
 
 // Globally set useragent to fix user agent override in service workers
 debug('Set userAgent to ', userAgent());
@@ -358,6 +356,13 @@ const createWindow = () => {
   } else {
     mainWindow.show();
   }
+
+  app.whenReady().then(() => {
+    // Toggle the window on 'Alt+X'
+    globalShortcut.register(`${altKey()}+X`, () => {
+      trayIcon.trayMenuTemplate[0].click();
+    });
+  });
 };
 
 // Allow passing command line parameters/switches to electron
@@ -401,30 +406,35 @@ app.on('ready', () => {
   }
 
   if (isWindows) {
-    app.setUserTasks([
-      {
-        program: process.execPath,
-        arguments: `${isDevMode ? `${__dirname} ` : ''}--reset-window`,
-        iconPath: asarPath(
+    const extraArgs = isDevMode ? `${__dirname} ` : '';
+    const iconPath = asarPath(
           join(
             isDevMode ? `${__dirname}../src/` : __dirname,
             'assets/images/taskbar/win32/display.ico',
           ),
-        ),
+        );
+    app.setUserTasks([
+      {
+        program: process.execPath,
+        arguments: `${extraArgs}--reset-window`,
+        iconPath,
         iconIndex: 0,
         title: 'Move Ferdi to Current Display',
         description: 'Restore the position and size of Ferdi',
       },
       {
         program: process.execPath,
-        arguments: `${isDevMode ? `${__dirname} ` : ''}--quit`,
+        arguments: `${extraArgs}--quit`,
+        iconPath,
         iconIndex: 0,
-        iconPath: null,
         title: 'Quit Ferdi',
         description: null,
       },
     ]);
   }
+
+  // eslint-disable-next-line global-require
+  require('electron-react-titlebar/main').initialize();
 
   createWindow();
 });
